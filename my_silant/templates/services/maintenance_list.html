@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="client">
+    <i class="silant silant-client"></i>
+    {% if user.is_superuser %}
+        <h2>Администратор</h2>
+    {% elif user.groups.first.name == "Менеджер" %}
+        <h2>Менеджер {{user.first_name}}</h2>
+    {% elif user.groups.first.name == "Сервисная организация" %}
+        <h2>Сервисная организация {{user.userprofile.service_company}}</h2>
+    {% else %}
+        <h2>Клиент {{user.first_name}} </h2>
+    {% endif %}
+</div>
+<nav class="nav-panel">
+    <ul>
+        <li><a href="{% url 'car_list' %}"><i class="silant silant-vehicle"></i> Машины</a></li>
+        <li class="active"><a href="{% url 'maintenance_list' %}"><i class="silant silant-maintenance"></i> ТО</a></li>
+        <li><a href="{% url 'complaint_list' %}"><i class="silant silant-complaint"></i> Рекламации</a></li>
+    </ul>
+</nav>
+<h3>Информация о комплектации и технических характеристиках Вашей техники</h3>
+<div class="action-buttons">
+    <a href="{% url 'maintenance_create' %}">Создать ТО</a>
+</div>
+<section class="area-table">
+<table id="tableMaintenances" class="datatable" data-order='[0, "desc"]'>
+    <thead class="datatable-thead">
+        <tr>
+            <th width="20%">Дата проведения ТО</th>
+            <th width="40%">Вид ТО</th>
+            <th width="30%">Наработка, м/час</th>
+            <th width="20%">№ заказ-наряда</th>
+            <th width="20%">Дата заказ-наряда</th>
+            <th width="30%">Организация, проводившая ТО</th>
+            <th width="30%">Машина</th>
+            <th width="3%"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{obj.date|date:"d.m.Y"}}</td>
+            <td><span class="description-js" data-url="{% url 'maintenance_description' obj.pk 'type' %}">{{obj.type.name}}</span></td>
+            <td>{{obj.operating_time}}</td>
+            <td>{{obj.order_number}}</td>
+            <td>{{obj.order_date|date:"d.m.Y"}}</td>
+            {% if obj.service_company %}
+            <td><span class="description-js" data-url="{% url 'maintenance_description' obj.pk 'service_company' %}">{{obj.service_company.name}}</span></td>
+            {% else %}
+            <td>Нет компании</td>
+            {% endif %}
+            <td><a href="{% url 'car_detail' obj.car.pk %}">{{obj.car}}</a></td>
+            <td>
+                <div class="actions">
+                    <a class="update" href="{% url 'maintenance_update' obj.pk %}"><i class="fas fa-pencil-alt"></i></a>
+                    <a class="delete delete-js" data-url="{% url 'maintenance_delete' obj.pk %}"><i class="fas fa-times"></i></a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</section>
+{% endblock %}

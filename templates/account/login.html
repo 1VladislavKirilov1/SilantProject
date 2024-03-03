@@ -1,0 +1,16 @@
+{% extends "account/base.html" %}
+{% block head_title %}Авторизация{% endblock %}
+{% block content %}
+<div class="account">
+  <form class="account-form login" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    <h1>Авторизация</h1>
+    <input type="text" name="login" placeholder="Имя пользователя" autocomplete="username" maxlength="150" required="" id="id_login">
+    <input type="password" name="password" placeholder="Пароль" autocomplete="current-password" required="" id="id_password">
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button class="primaryAction" type="submit">Войти</button>
+  </form>
+</div>
+{% endblock %}

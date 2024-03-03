@@ -1,0 +1,19 @@
+{% load static %}
+<header>
+    <section class="header-top">
+        <ul>
+            <li><a href="/"><img class="logo-min" src="{% static 'images/Logo-min.svg' %}"><img class="logo" src="{% static 'images/Logo.svg' %}"></a></li>
+            <li><a href="tel:+78352201209">+7 (8352)-20-12-09</a></li>
+            <li><a href="https://t.me/chzsa21"><i class="fab fa-telegram"></i></a></li>
+            <h1 class="header-title-min">“Мой Силант”</h1>
+            <li>
+                {% if request.user.is_authenticated %}
+                <a class="logout logout-js" data-url="{% url 'account_logout' %}">Выйти</a>
+                {% else %}
+                <a href="{% url 'account_login' %}">Авторизация</a>
+                {% endif %}
+            </li>
+        </ul>
+    </section>
+    <h1 class="header-title">Электронная сервисная книжка “Мой Силант”</h1>
+</header>

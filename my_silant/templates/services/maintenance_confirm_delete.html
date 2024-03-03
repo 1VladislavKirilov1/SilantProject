@@ -1,0 +1,17 @@
+<a href="" class="modal-area"></a>
+<form class="account-form modal-frame" method="post" action="{{request.path}}">
+  {% csrf_token %}
+    <span class="modal-exit"><i class="fas fa-times"></i></span>
+    <div class="modal-body">
+        <h1>Удаление</h1>
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <h4>Вы действительно хотите удалить {% if type == 'car' %}машину{% elif type == 'maintenance' %}ТО{% elif type == 'complaint' %}рекламацию{% endif %} {{object}}?</h4>
+        <div class="modal-buttons">
+            <button class="button" type="submit">Удалить</button>
+            <span class="dummy-btn"></span>
+            <button class="button button-alt cancel-js" type="reset">Отмена</button>
+        </div>
+    </div>
+</form>

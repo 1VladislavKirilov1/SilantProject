@@ -1,0 +1,15 @@
+<a href="" class="modal-area"></a>
+<form class="account-form modal-frame" method="post" action="{{request.path}}">
+    <span class="modal-exit"><i class="fas fa-times"></i></span>
+    <div class="modal-body">
+        {% if attribute %}
+            <h1>{{attribute}}</h1>
+        {% endif %}
+        {% if description %}
+            <h4>{{description}}</h4>
+        {% endif %}
+        <div class="modal-buttons">
+            <button class="button cancel-js" type="button">Понятно</button>
+        </div>
+    </div>
+</form>

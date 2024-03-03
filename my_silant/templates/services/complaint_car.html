@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<a class="back-page" href="{% url 'car_list' %}"><i class="fas fa-long-arrow-alt-left"></i>Назад</a>
+<div class="client">
+    <i class="silant silant-vehicle"></i>
+    <h2>Машина {{car.car_number}}</h2>
+</div>
+<nav class="nav-panel">
+    <ul>
+        <li><a href="{% url 'car_detail' car.pk %}"><i class="silant silant-service"></i> Сведения</a></li>
+        <li><a href="{% url 'car_maintenance' car.pk %}"><i class="silant silant-maintenance"></i> ТО</a></li>
+        <li class="active"><a href="{% url 'car_complaint' car.pk %}"><i class="silant silant-complaint"></i> Рекламации</a></li>
+    </ul>
+</nav>
+<h3>Информация о комплектации и технических характеристиках Вашей техники</h3>
+{% if user.is_superuser or user.groups.first.name == "Сервисная организация" or user.groups.first.name == "Менеджер" %}
+<div class="action-buttons">
+    <a href="{% url 'complaint_create' %}">Создать рекламацию</a>
+</div>
+{% endif %}
+<section class="area-table">
+<table id="tableComplaints" class="datatable" data-order='[0, "desc"]'>
+    <thead class="datatable-thead">
+        <tr>
+            <th width="30%">Дата отказа</th>
+            <th width="20%">Наработка, м/час</th>
+            <th width="40%">Узел отказа</th>
+            <th width="30%">Описание отказа</th>
+            <th width="20%">Способ восстановления</th>
+            <th width="20%">Используемые запасные части</th>
+            <th width="30%">Дата восстановления</th>
+            <th width="20%">Время простоя техники</th>
+            <th width="30%">Сервисная компания</th>
+            {% if user.is_superuser or user.groups.first.name == "Менеджер" or user.groups.first.name == "Сервисная организация" %}
+            <th width="3%"></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{obj.date_failure|date:"d.m.Y"}}</td>
+            <td>{{obj.operating_time}}</td>
+            <td><span class="description-js" data-url="{% url 'complaint_description' obj.pk 'node_failure' %}">{{obj.node_failure}}</span></td>
+            <td>{{obj.description_failure}}</td>
+            <td><span class="description-js" data-url="{% url 'complaint_description' obj.pk 'method_recovery' %}">{{obj.method_recovery}}</span></td>
+            <td>{{obj.repair_parts}}</td>
+            <td>{{obj.date_recovery|date:"d.m.Y"}}</td>
+            <td>{{obj.downtime}}</td>
+            {% if obj.service_company %}
+            <td><span class="description-js" data-url="{% url 'complaint_description' obj.pk 'service_company' %}">{{obj.service_company}}</span></td>
+            {% else %}
+            <td>Нет компании</td>
+            {% endif %}
+            {% if user.is_superuser or user.groups.first.name == "Менеджер" or user.groups.first.name == "Сервисная организация" %}
+            <td>
+                <div class="actions">
+                    <a class="update" href="{% url 'complaint_update' obj.pk %}"><i class="fas fa-pencil-alt"></i></a>
+                    <a class="delete delete-js" data-url="{% url 'complaint_delete' obj.pk %}"><i class="fas fa-times"></i></a>
+                </div>
+            </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</section>
+{% endblock %}

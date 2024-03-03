@@ -1,0 +1,5 @@
+Django==3.2.12
+django-allauth==0.47.0
+django-import-export==2.7.0
+django-filter==22.1
+djangorestframework==3.14.0

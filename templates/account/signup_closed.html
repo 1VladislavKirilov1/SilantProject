@@ -1,0 +1,11 @@
+{% extends "account/base.html" %}
+{% block head_title %}Регистрация закрыта{% endblock %}
+{% block content %}
+<div class="account">
+  <form class="account-form login" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    <h1>Регистрация закрыта</h1>
+    <a class="button" href="{% url 'account_login' %}">Авторизоваться</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<a class="back-page" href="{% url 'car_list' %}"><i class="fas fa-long-arrow-alt-left"></i>Назад</a>
+<h3>Изменение машины</h3>
+<form class="form" name="carForm" method="post" action="{{request.path}}">
+    {% csrf_token %}
+    <div class="united">
+        <label for="id_car_number">{{form.car_number.label}}</label> {{form.car_number}}
+        <label for="id_technic">{{form.technic.label}}</label> {{form.technic}}
+    </div>
+    <div class="united">
+        <label for="id_engine">{{form.engine.label}}</label> {{form.engine}}
+        <label for="id_engine_number">{{form.engine_number.label}}</label> {{form.engine_number}}
+    </div>
+    <div class="united">
+        <label for="id_transmission">{{form.transmission.label}}</label> {{form.transmission}}
+        <label for="id_transmission_number">{{form.transmission_number.label}}</label> {{form.transmission_number}}
+    </div>
+    <div class="united">
+        <label for="id_driving_bridge">{{form.driving_bridge.label}}</label> {{form.driving_bridge}}
+        <label for="id_driving_bridge_number">{{form.driving_bridge_number.label}}</label> {{form.driving_bridge_number}}
+    </div>
+    <div class="united">
+        <label for="id_controlled_bridge">{{form.controlled_bridge.label}}</label> {{form.controlled_bridge}}
+        <label for="id_controlled_bridge_number">{{form.controlled_bridge_number.label}}</label> {{form.controlled_bridge_number}}
+    </div>
+    <div class="united">
+        <label for="id_delivery_contract">{{form.delivery_contract.label}}</label> {{form.delivery_contract}}
+        <label for="id_date_shipment">{{form.date_shipment.label}}</label> {{form.date_shipment}}
+    </div>
+    <div><label for="id_consignee">{{form.consignee.label}}</label> {{form.consignee}}</div>
+    <div><label for="id_delivery_address">{{form.delivery_address.label}}</label> {{form.delivery_address}}</div>
+    <div><label for="id_equipment">{{form.equipment.label}}</label> {{form.equipment}}</div>
+    <div class="united">
+        <label for="id_client">{{form.client.label}}</label> {{form.client}}
+        <label for="id_service_company">{{form.service_company.label}}</label> {{form.service_company}}
+    </div>
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

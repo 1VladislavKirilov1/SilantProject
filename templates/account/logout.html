@@ -1,0 +1,17 @@
+<a href="" class="modal-area"></a>
+<form class="account-form modal-frame" method="post" action="{% url 'account_logout' %}">
+  {% csrf_token %}
+    <span class="modal-exit"><i class="fas fa-times"></i></span>
+    <div class="modal-body">
+        <h1>Выход из учетной записи</h1>
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <h4>Вы действительно хотите выйти?</h4>
+        <div class="modal-buttons">
+            <button class="button" type="submit">Выйти</button>
+            <span class="dummy-btn"></span>
+            <button class="button button-alt cancel-js" type="reset">Отменить</button>
+        </div>
+    </div>
+</form>

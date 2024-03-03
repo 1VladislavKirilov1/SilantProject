@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<a class="back-page" href="{% url 'car_list' %}"><i class="fas fa-long-arrow-alt-left"></i>Назад</a>
+<div class="client">
+    <i class="silant silant-vehicle"></i>
+    <h2>Машина {{car.car_number}}</h2>
+</div>
+<nav class="nav-panel">
+    <ul>
+        <li><a href="{% url 'car_detail' car.pk %}"><i class="silant silant-service"></i> Сведения</a></li>
+        <li class="active"><a href="{% url 'car_maintenance' car.pk %}"><i class="silant silant-maintenance"></i> ТО</a></li>
+        <li><a href="{% url 'car_complaint' car.pk %}"><i class="silant silant-complaint"></i> Рекламации</a></li>
+    </ul>
+</nav>
+<h3>Информация о комплектации и технических характеристиках Вашей техники</h3>
+<div class="action-buttons">
+    <a href="{% url 'maintenance_create' %}">Создать ТО</a>
+</div>
+<section class="area-table"> 
+<table id="tableMaintenances" class="datatable" data-order='[0, "desc"]'>
+    <thead class="datatable-thead">
+        <tr>
+            <th width="20%">Дата проведения ТО</th>
+            <th width="30%">Вид ТО</th>
+            <th width="20%">Наработка, м/час</th>
+            <th width="20%">№ заказ-наряда</th>
+            <th width="20%">Дата заказ-наряда</th>
+            <th width="20%">Организация, проводившая ТО</th>
+            <th width="3%"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{obj.date|date:"d.m.Y"}}</td>
+            <td><span class="description-js" data-url="{% url 'maintenance_description' obj.pk 'type' %}">{{obj.type}}</span></td>
+            <td>{{obj.operating_time}}</td>
+            <td>{{obj.order_number}}</td>
+            <td>{{obj.order_date|date:"d.m.Y"}}</td>
+            {% if obj.service_company %}
+            <td><span class="description-js" data-url="{% url 'maintenance_description' obj.pk 'service_company' %}">{{obj.service_company}}</span></td>
+            {% else %}
+            <td>Нет компании</td>
+            {% endif %}
+            <td>
+                <div class="actions">
+                    <a class="update" href="{% url 'maintenance_update' obj.pk %}"><i class="fas fa-pencil-alt"></i></a>
+                    <a class="delete delete-js" data-url="{% url 'maintenance_delete' obj.pk %}"><i class="fas fa-times"></i></a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</section>
+{% endblock %}

@@ -1,0 +1,88 @@
+@media (max-width:1920px) {
+
+}
+@media (max-width:1536px) {
+
+}
+@media (max-width:1440px) {
+
+}
+@media (max-width:1366px) {
+
+}
+@media (max-width:1300px) {
+    :root{font-size: 9px;}
+    h1{font-size: 2.7rem;}
+    .header-dummy{margin-top: 100px;}
+    header{padding: 10px 30px;}
+    footer{padding: 20px 30px;}
+    .content{margin: 0 3%;}
+}
+@media (max-width:1028px) {
+    :root{font-size: 8px;}
+    h1{font-size: 2.5rem;}
+    .header-dummy{margin-top: 80px;}
+    .logo{height: 2.5rem !important;}
+    header{padding: 10px 20px;}
+    footer{padding: 20px 20px;}
+    .content{margin: 0 2%;}
+}
+@media (max-width:870px) {
+    .logo{display: none;}
+    .logo-min{display: block !important; height: 4rem !important; transform: none !important;}
+    table th{font-size: 1.6rem;}
+    .nav-panel ul a{
+        min-width: max-content;
+    }
+    .form button{
+        width: 100%;
+    }
+}
+
+@media (max-width:750px) {
+    .form{
+        gap: 5px;
+        > div{
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .united{
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .choices{
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px 10px;
+            margin-bottom: 10px;
+        }
+    }
+}
+@media (max-width:620px) {
+    .logo-min{height: 3rem !important;}
+    h1{font-size: 2.3rem;}
+    header{padding: 10px 10px;}
+    footer{padding: 20px 10px;}
+    .header-top li:nth-child(2),.header-top li:nth-child(3){display: none;}
+    .header-title{display: none;}
+    .header-title-min{display: block !important;}
+    .header-top ul li:last-child{margin-left: 0;}
+    .header-dummy{margin-top: 50px;}
+    .modal-buttons .dummy-btn{flex-basis: 10%;}
+}
+@media (max-width:525px) {
+    h1{font-size: 2rem;}
+    .nav-panel ul a{padding: 10px 20px;}
+    .action-buttons a{width: 100%;}
+    .modal-frame{min-width: 100%;}
+    .account-form h4{text-align: left;}
+}
+@media (max-width:420px) {
+    .client h2{font-size: 1.8rem;}
+    .client i{font-size: 4rem;}
+    .nav-panel ul{flex-direction: column; gap: 5px;}
+    .nav-panel ul li a{justify-content: flex-start; font-size: 2rem;}
+}
