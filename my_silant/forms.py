@@ -1,15 +1,22 @@
 from django import forms
-from .models import *
+from .models import Maintenance, Complaint
 
-class MaintenanceForm(forms.ModelForm):
+
+class BaseForm(forms.ModelForm):
     class Meta:
-        model = Maintenance
-        fields = '__all__'
-        widgets ={
+        abstract = True
+        widgets = {
             'type': forms.RadioSelect()
         }
 
-class ComplaintForm(forms.ModelForm):
-    class Meta:
+
+class MaintenanceForm(BaseForm):
+    class Meta(BaseForm.Meta):
+        model = Maintenance
+        fields = '__all__'
+
+
+class ComplaintForm(BaseForm):
+    class Meta(BaseForm.Meta):
         model = Complaint
         fields = '__all__'

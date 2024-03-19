@@ -1,58 +1,73 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-from vehicles.models import *
-from my_silant.models import *
-from my_silant.forms import *
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from vehicles.models import Car, UserProfile
+from my_silant.models import Maintenance, Complaint
+from my_silant.forms import MaintenanceForm, ComplaintForm
 from my_silant.serializers import MaintenanceSerializer, ComplaintSerializer
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework import generics
 
 
-class MaintenanceListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = 'my_silant.view_maintenance'
-    model = Maintenance
-    template_name = 'services/maintenance_list.html'
+# Mixin для представлений, требующих аутентификации и разрешения
+class AuthPermissionMixin(LoginRequiredMixin, PermissionRequiredMixin):
+    login_url = '/login/'  # URL для перенаправления пользователя на страницу входа
+    raise_exception = True  # Возбуждать исключение PermissionDenied, если пользователь не имеет необходимых прав
+
+
+# Mixin для представлений, отображающих список объектов
+class ObjectListView(AuthPermissionMixin, ListView):
+    template_name = None  # Шаблон должен быть определен в наследующем классе
+    model = None  # Модель должна быть определена в наследующем классе
 
     def get_queryset(self):
+        queryset = super().get_queryset()
         if not self.request.user.is_staff:
-            user = User.objects.get(pk=self.request.user.pk)
+            user = self.request.user
             try:
                 profile = UserProfile.objects.get(user=user)
                 if profile.is_service:
-                    return Maintenance.objects.filter(service_company=profile.service_company)
-            except:
-                return Maintenance.objects.filter(car__client=user)
-        else:
-            return Maintenance.objects.all()
+                    queryset = queryset.filter(service_company=profile.service_company)
+            except UserProfile.DoesNotExist:
+                queryset = queryset.filter(car__client=user)
+        return queryset
 
 
-class MaintenanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+# Mixin для представлений, отображающих детали объекта
+class ObjectDetailView(AuthPermissionMixin, DetailView):
+    template_name = None  # Шаблон должен быть определен в наследующем классе
+    model = None  # Модель должна быть определена в наследующем классе
+
+
+# Классы представлений для Maintenance
+class MaintenanceListView(ObjectListView):
+    permission_required = 'my_silant.view_maintenance'
+    template_name = 'services/maintenance_list.html'
+    model = Maintenance
+
+
+class MaintenanceCreateView(AuthPermissionMixin, CreateView):
     permission_required = 'my_silant.add_maintenance'
-    model = Maintenance
-    form_class = MaintenanceForm
     template_name = 'services/maintenance_create.html'
-    success_url = reverse_lazy('maintenance_list')
-
-
-class MaintenanceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'my_silant.change_maintenance'
-    model = Maintenance
     form_class = MaintenanceForm
-    template_name = 'services/maintenance_update.html'
     success_url = reverse_lazy('maintenance_list')
-
-
-class MaintenanceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'my_silant.delete_maintenance'
     model = Maintenance
+
+
+class MaintenanceUpdateView(AuthPermissionMixin, UpdateView):
+    permission_required = 'my_silant.change_maintenance'
+    template_name = 'services/maintenance_update.html'
+    form_class = MaintenanceForm
+    success_url = reverse_lazy('maintenance_list')
+    model = Maintenance
+
+
+class MaintenanceDeleteView(AuthPermissionMixin, DeleteView):
+    permission_required = 'my_silant.delete_maintenance'
     template_name_suffix = '_confirm_delete'
     success_url = reverse_lazy('maintenance_list')
+    model = Maintenance
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,45 +75,34 @@ class MaintenanceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteV
         return context
 
 
-class ComplaintListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+# Классы представлений для Complaint
+class ComplaintListView(ObjectListView):
     permission_required = 'my_silant.view_complaint'
-    model = Complaint
     template_name = 'services/complaint_list.html'
-
-    def get_queryset(self):
-        if not self.request.user.is_staff:
-            user = User.objects.get(pk=self.request.user.pk)
-            try:
-                profile = UserProfile.objects.get(user=user)
-                if profile.is_service:
-                    return Complaint.objects.filter(service_company=profile.service_company)
-            except:
-                return Complaint.objects.filter(car__client=user)
-        else:
-            return Complaint.objects.all()
+    model = Complaint
 
 
-class ComplaintCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ComplaintCreateView(AuthPermissionMixin, CreateView):
     permission_required = 'my_silant.add_complaint'
-    model = Complaint
-    form_class = ComplaintForm
     template_name = 'services/complaint_create.html'
-    success_url = reverse_lazy('complaint_list')
-
-
-class ComplaintUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'my_silant.change_complaint'
-    model = Complaint
     form_class = ComplaintForm
-    template_name = 'services/complaint_update.html'
     success_url = reverse_lazy('complaint_list')
-
-
-class ComplaintDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'my_silant.delete_complaint'
     model = Complaint
+
+
+class ComplaintUpdateView(AuthPermissionMixin, UpdateView):
+    permission_required = 'my_silant.change_complaint'
+    template_name = 'services/complaint_update.html'
+    form_class = ComplaintForm
+    success_url = reverse_lazy('complaint_list')
+    model = Complaint
+
+
+class ComplaintDeleteView(AuthPermissionMixin, DeleteView):
+    permission_required = 'my_silant.delete_complaint'
     template_name_suffix = '_confirm_delete'
     success_url = reverse_lazy('complaint_list')
+    model = Complaint
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -106,10 +110,11 @@ class ComplaintDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
         return context
 
 
-class MaintenanceCarListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+# Классы представлений для просмотра Maintenance и Complaint по автомобилю
+class MaintenanceCarListView(ObjectListView):
     permission_required = 'my_silant.view_maintenance'
-    model = Maintenance
     template_name = 'services/maintenance_car.html'
+    model = Maintenance
 
     def get_queryset(self):
         car = Car.objects.get(pk=self.kwargs["pk"])
@@ -121,10 +126,10 @@ class MaintenanceCarListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
         return context
 
 
-class ComplaintCarListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class ComplaintCarListView(ObjectListView):
     permission_required = 'my_silant.view_complaint'
-    model = Complaint
     template_name = 'services/complaint_car.html'
+    model = Complaint
 
     def get_queryset(self):
         car = Car.objects.get(pk=self.kwargs["pk"])
@@ -136,7 +141,9 @@ class ComplaintCarListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         return context
 
 
-class MaintenanceDescriptionView(TemplateView):
+# Классы представлений для модального окна с описанием
+class MaintenanceDescriptionView(AuthPermissionMixin, TemplateView):
+    permission_required = 'my_silant.view_maintenance'
     template_name = 'services/modal_description.html'
 
     def get_context_data(self, **kwargs):
@@ -152,7 +159,8 @@ class MaintenanceDescriptionView(TemplateView):
         return context
 
 
-class ComplaintDescriptionView(TemplateView):
+class ComplaintDescriptionView(AuthPermissionMixin, TemplateView):
+    permission_required = 'my_silant.view_complaint'
     template_name = 'services/modal_description.html'
 
     def get_context_data(self, **kwargs):
@@ -171,7 +179,7 @@ class ComplaintDescriptionView(TemplateView):
         return context
 
 
-# API
+# API представления
 class MaintenanceListAPI(generics.ListAPIView):
     serializer_class = MaintenanceSerializer
     queryset = Maintenance.objects.all()
@@ -181,23 +189,17 @@ class MaintenanceUserListAPI(generics.ListAPIView):
     serializer_class = MaintenanceSerializer
 
     def get_queryset(self):
-        try:
-            user = int(self.kwargs['user'])
-        except:
-            user = self.kwargs['user']
-        if type(user) == int:
-            queryset = Maintenance.objects.filter(car__client=user)
-        elif type(user) == str:
-            queryset = Maintenance.objects.filter(car__client__username=user)
-        return queryset
+        user = self.kwargs['user']
+        if isinstance(user, int):
+            return Maintenance.objects.filter(car__client=user)
+        return Maintenance.objects.filter(car__client__username=user)
 
 
 class MaintenanceDetailAPI(generics.RetrieveAPIView):
     serializer_class = MaintenanceSerializer
 
     def get_object(self):
-        obj = Maintenance.objects.get(pk=self.kwargs['pk'])
-        return obj
+        return Maintenance.objects.get(pk=self.kwargs['pk'])
 
 
 class ComplaintListAPI(generics.ListAPIView):
@@ -209,20 +211,14 @@ class ComplaintUserListAPI(generics.ListAPIView):
     serializer_class = ComplaintSerializer
 
     def get_queryset(self):
-        try:
-            user = int(self.kwargs['user'])
-        except:
-            user = self.kwargs['user']
-        if type(user) == int:
-            queryset = Complaint.objects.filter(car__client=user)
-        elif type(user) == str:
-            queryset = Complaint.objects.filter(car__client__username=user)
-        return queryset
+        user = self.kwargs['user']
+        if isinstance(user, int):
+            return Complaint.objects.filter(car__client=user)
+        return Complaint.objects.filter(car__client__username=user)
 
 
 class ComplaintDetailAPI(generics.RetrieveAPIView):
     serializer_class = ComplaintSerializer
 
     def get_object(self):
-        obj = Complaint.objects.get(pk=self.kwargs['pk'])
-        return obj
+        return Complaint.objects.get(pk=self.kwargs['pk'])

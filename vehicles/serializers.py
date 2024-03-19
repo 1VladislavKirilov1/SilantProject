@@ -52,3 +52,14 @@ class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['technic'] = TechnicSerializer(instance.technic).data
+        representation['engine'] = EngineSerializer(instance.engine).data
+        representation['transmission'] = TransmissionSerializer(instance.transmission).data
+        representation['driving_bridge'] = DrivingBridgeSerializer(instance.driving_bridge).data
+        representation['controlled_bridge'] = ControlledBridgeSerializer(instance.controlled_bridge).data
+        representation['service_company'] = ServiceCompanySerializer(instance.service_company).data
+        representation['client'] = UserSerializer(instance.client).data
+        return representation
