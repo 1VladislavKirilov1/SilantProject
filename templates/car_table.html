@@ -1,6 +1,6 @@
 <h3>Информация о комплектации и технических характеристиках Вашей техники</h3>
 <section class="area-table">
-    <table id="tableCars" class="datatable" data-order='[0, "asc"]'>
+    <table id="tableCars" class="datatable" data-order='[[0, "asc"]]'>
         <thead class="datatable-thead">
             <tr>
                 <th>Зав. № машины</th>
@@ -16,20 +16,40 @@
             </tr>
         </thead>
         <tbody>
-        {% for obj in object_list %}
-            <tr>
-                <td>{{obj.car_number}}</td>
-                <td><span class="description-js" data-url="{% url 'car_description' obj.pk 'technic' %}">{{obj.technic}}</span></td>
-                <td><span class="description-js" data-url="{% url 'car_description' obj.pk 'engine' %}">{{obj.engine}}</span></td>
-                <td>{{obj.engine_number}}</td>
-                <td><span class="description-js" data-url="{% url 'car_description' obj.pk 'transmission' %}">{{obj.transmission}}</span></td>
-                <td>{{obj.transmission_number}}</td>
-                <td><span class="description-js" data-url="{% url 'car_description' obj.pk 'driving_bridge' %}">{{obj.driving_bridge}}</span></td>
-                <td>{{obj.driving_bridge_number}}</td>
-                <td><span class="description-js" data-url="{% url 'car_description' obj.pk 'controlled_bridge' %}">{{obj.controlled_bridge}}</span></td>
-                <td>{{obj.controlled_bridge_number}}</td>
-            </tr>
-        {% endfor %}
+            {% for obj in object_list %}
+                <tr>
+                    <td>{{ obj.car_number }}</td>
+                    <td>
+                        <span class="description-js" data-url="{% url 'car_description' obj.pk 'technic' %}">
+                            {{ obj.technic }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="description-js" data-url="{% url 'car_description' obj.pk 'engine' %}">
+                            {{ obj.engine }}
+                        </span>
+                    </td>
+                    <td>{{ obj.engine_number }}</td>
+                    <td>
+                        <span class="description-js" data-url="{% url 'car_description' obj.pk 'transmission' %}">
+                            {{ obj.transmission }}
+                        </span>
+                    </td>
+                    <td>{{ obj.transmission_number }}</td>
+                    <td>
+                        <span class="description-js" data-url="{% url 'car_description' obj.pk 'driving_bridge' %}">
+                            {{ obj.driving_bridge }}
+                        </span>
+                    </td>
+                    <td>{{ obj.driving_bridge_number }}</td>
+                    <td>
+                        <span class="description-js" data-url="{% url 'car_description' obj.pk 'controlled_bridge' %}">
+                            {{ obj.controlled_bridge }}
+                        </span>
+                    </td>
+                    <td>{{ obj.controlled_bridge_number }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 </section>

@@ -1,46 +1,41 @@
-$(document).ready(function() {
-    $('.description-js').click(function() {
-        let url = $(this).data('url');
-        const modalId = "description-form";
-        let modal = document.getElementById(modalId);
-        if (modal == null) {
-            modal = document.createElement("section");
-            modal.id = modalId;
-            modal.className = "modal";
-            document.body.appendChild(modal);
-        }
+$(document).on("click", ".description-js", function() {
+    let url = $(this).data("url");
+    const modalId = "description-form";
+    let modal = $("#" + modalId);
 
-        fetch(url).then((response) =>
-            response.text().then((data) => {
-                $(modal).html(data);
-                $(modal).fadeIn();
-                ModalsWindows();
+    if (!modal.length) {
+        modal = $("<section></section>", {
+            id: modalId,
+            class: "modal"
+        }).appendTo("body");
+    }
 
-                const forms = document.querySelectorAll("form");
-                forms.forEach((form) => {
-                    form.addEventListener("submit", function (e) {
-                        e.preventDefault();
-                        const formData = new FormData(this);
-                        let url = this.action;
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            modal.html(data).fadeIn();
+            ModalsWindows();
 
-                        const fetchResp = fetch(url, {
-                            method: "POST",
-                            body: formData,
-                        }).then((response) => {
-                            if (response.redirected) {
-                                window.location.href = response.url;
-                            } else {
-                                response.text().then((data) => {
-                                    $(modal).html(data);
-                                    ModalsWindows();
-                                });
-                            }
+            modal.find("form").on("submit", function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                let actionUrl = this.action;
+
+                fetch(actionUrl, {
+                    method: "POST",
+                    body: formData
+                }).then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        response.text().then(data => {
+                            modal.html(data);
+                            ModalsWindows();
                         });
-                    });
+                    }
                 });
-            })
-        );
+            });
+        });
 
-        return false; // Предотвращаем действие по умолчанию при клике на ссылку
-    });
+    return false;
 });

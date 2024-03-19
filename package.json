@@ -1,0 +1,34 @@
+{
+  "name": "silantproject2.0",
+  "version": "1.0.0",
+  "description": "<h1>Silant-дипломный проект на курсе FPW от SkillFactory</h1>\r <hr>\r <h2>Для начала работы следует клонировать репозиторий на свой пк;\r <br>войти в папку SilantProject; <br>активировать виртуальное окружение командой .venv/scripts/activate;<br>\r установить зависимости командой pip install -r requirements.txt;<br>\r перейти на страницу http://127.0.0.1:8000/cars/ (maintenances или complaints)<br>\r Для редактирования Машин, ТО и Рекламаций в файле user.txt присутствует логин и пароль администратора</h2>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.24.1",
+    "@babel/preset-env": "^7.24.1",
+    "babel-loader": "^9.1.3",
+    "css-loader": "^6.10.0",
+    "node-sass": "^9.0.0",
+    "sass-loader": "^14.1.1",
+    "style-loader": "^3.3.4",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "datatables.net": "^2.0.2",
+    "datatables.net-buttons": "^3.0.1",
+    "datatables.net-dt": "^2.0.2",
+    "datatables.net-jqui": "^2.0.2",
+    "datatables.net-scroller": "^2.4.1",
+    "datatables.net-se": "^2.0.2",
+    "datatables.net-zf": "^2.0.2",
+    "jquery": "^3.7.1"
+  }
+}
